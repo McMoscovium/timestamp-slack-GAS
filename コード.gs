@@ -111,6 +111,16 @@ function appendLogRow({ timestamp, userId, actionId, teamId }) {
   ]);
 }
 
+function test_appendLogRow(){
+  const test1={
+    timestamp: 125,
+    userId : "u213984723",
+    actionId: "action1",
+    teamId: "team1"
+  }
+  appendLogRow(test1);
+}
+
 /**
  * キューへ投入
  */
