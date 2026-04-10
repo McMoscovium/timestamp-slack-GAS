@@ -1,4 +1,5 @@
 const SHEET_NAME = 'log';
+const QUEUE_KEY="slack_action_queue"
 
 /**
  * 初期設定用:
@@ -12,8 +13,6 @@ function setupProperties() {
     SPREADSHEET_ID: '1cMirMugbAMNehdGUgt10LmZLw2Iz12XM3N5_B1x6lUg'
   });
 }
-
-
 
 /**
  * Slack からの POST を受ける
@@ -55,7 +54,7 @@ function handleEvent(body) {
   if (body.type === 'event_callback') {
     const event = body.event;
     if (event.type === 'app_home_opened' && event.tab === 'home') {
-      publishHomeView(event.user);
+      publishHomeView(event.user,"");
     }
     return jsonResponse({ ok: true });
   }
@@ -112,71 +111,6 @@ function appendLogRow({ timestamp, userId, actionId, teamId }) {
   ]);
 }
 
-/**
- * App Home を publish
- */
-function publishHomeView(userId, message) {
-  const token = getRequiredProperty_('SLACK_BOT_TOKEN');
-
-  const blocks = [
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: '*記録アプリ*\nボタンを押すと現在時刻を記録します。'
-      }
-    },
-    {
-      type: 'actions',
-      elements: [
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: '時刻を記録'
-          },
-          action_id: 'record_time_button',
-          value: 'record'
-        }
-      ]
-    }
-  ];
-
-  if (message) {
-    blocks.unshift({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `:white_check_mark: ${message}`
-      }
-    });
-  }
-
-  const payload = {
-    user_id: userId,
-    view: {
-      type: 'home',
-      blocks: blocks
-    }
-  };
-
-  const response = UrlFetchApp.fetch('https://slack.com/api/views.publish', {
-    method: 'post',
-    contentType: 'application/json; charset=utf-8',
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  });
-
-  const text = response.getContentText();
-  const result = JSON.parse(text);
-
-  if (!result.ok) {
-    throw new Error(`views.publish failed: ${text}`);
-  }
-}
 /**
  * キューへ投入
  */
@@ -344,7 +278,7 @@ function publishHomeView(userId, status) {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*記録アプリ*\nボタンを押すと現在時刻を記録します。'
+        text: '*記録アプリ*\nボタンを押すと現在時刻を記録します。\n 2026/4/10 19:21 更新'
       }
     },
     {
@@ -371,17 +305,22 @@ function publishHomeView(userId, status) {
     }
   };
 
-  const response = UrlFetchApp.fetch('https://slack.com/api/views.publish', {
-    method: 'post',
-    contentType: 'application/json; charset=utf-8',
-    headers: {
-      Authorization: `Bearer ${token}`
+  const options={
+    method: "post",
+    contentType: "application/json; charset=utf-8",
+    headers:{
+      Authorization: "Bearer "+ token
     },
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
-  });
+  }
+
+  const response = UrlFetchApp.fetch('https://slack.com/api/views.publish', options);
 
   const result = JSON.parse(response.getContentText());
+
+  Logger.log(text);
+  
   if (!result.ok) {
     throw new Error('views.publish failed: ' + response.getContentText());
   }
