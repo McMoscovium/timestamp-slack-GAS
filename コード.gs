@@ -2,19 +2,6 @@ const SHEET_NAME = 'log';
 const QUEUE_KEY="slack_action_queue"
 
 /**
- * 初期設定用:
- * 1回だけ実行して、Script Properties に値を保存する
- */
-function setupProperties() {
-  const props = PropertiesService.getScriptProperties();
-
-  props.setProperties({
-    SLACK_BOT_TOKEN: 'xoxb-10859398409155-10885879376194-kpvx7ayMraWGkXpIetDNNO8u',
-    SPREADSHEET_ID: '1cMirMugbAMNehdGUgt10LmZLw2Iz12XM3N5_B1x6lUg'
-  });
-}
-
-/**
  * Slack からの POST を受ける
  */
 function doPost(e) {
