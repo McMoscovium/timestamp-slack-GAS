@@ -3,6 +3,35 @@
     "@google/clasp": "^3.3.0"
   },
   "scripts": {
+    "build": "node esbuild.js",
+    "push": "clasp push",
+    "open": "clasp open-script",
+    "deploy": "npm run build && npm run push",
     "clasp": "clasp"
-  }
+  },
+  "name": "timestamp-slack-gas",
+  "version": "1.0.0",
+  "description": "GASとSlackを連携させてタイムスタンプを記録するアプリ",
+  "main": "src/main.ts",
+  "type": "module",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "@types/google-apps-script": "^2.0.8",
+    "esbuild": "^0.28.0",
+    "esbuild-gas-plugin": "^0.10.0",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/McMoscovium/timestamp-slack-GAS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/McMoscovium/timestamp-slack-GAS/issues"
+  },
+  "homepage": "https://github.com/McMoscovium/timestamp-slack-GAS#readme"
 }

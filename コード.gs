@@ -1,5 +1,5 @@
 const SHEET_NAME = 'log';
-const QUEUE_KEY="slack_action_queue"
+const QUEUE_KEY = "slack_action_queue"
 
 /**
  * Slack からの POST を受ける
@@ -41,7 +41,7 @@ function handleEvent(body) {
   if (body.type === 'event_callback') {
     const event = body.event;
     if (event.type === 'app_home_opened' && event.tab === 'home') {
-      publishHomeView(event.user,"");
+      View(event.user, "");
     }
     return jsonResponse({ ok: true });
   }
@@ -98,10 +98,10 @@ function appendLogRow({ timestamp, userId, actionId, teamId }) {
   ]);
 }
 
-function test_appendLogRow(){
-  const test1={
+function test_appendLogRow() {
+  const test1 = {
     timestamp: 125,
-    userId : "u213984723",
+    userId: "u213984723",
     actionId: "action1",
     teamId: "team1"
   }
@@ -189,7 +189,7 @@ function processQueue() {
     sheet
       .getRange(startRow, 1, values.length, values[0].length)
       .setValues(values);
-    
+
     // 書き込み成功後に、各ユーザーの Home を更新
     const notifiedUsers = new Set();
     for (const item of queue) {
@@ -302,11 +302,11 @@ function publishHomeView(userId, status) {
     }
   };
 
-  const options={
+  const options = {
     method: "post",
     contentType: "application/json; charset=utf-8",
-    headers:{
-      Authorization: "Bearer "+ token
+    headers: {
+      Authorization: "Bearer " + token
     },
     payload: JSON.stringify(payload),
     muteHttpExceptions: true
@@ -317,7 +317,7 @@ function publishHomeView(userId, status) {
   const result = JSON.parse(response.getContentText());
 
   Logger.log(text);
-  
+
   if (!result.ok) {
     throw new Error('views.publish failed: ' + response.getContentText());
   }
